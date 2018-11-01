@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="google-signin-client_id" content="109974535614-38ku0rbbjf3lmru0r8th6fj1s3lmvlkb.apps.googleusercontent.com">
+  <title>KerenNews</title>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <a href="#" onclick="signOut();">Sign out</a>
+
+  <script>
+  function onSignIn(googleUser) {
+    let id_token = googleUser.getAuthResponse().id_token
+    $.ajax({
+      url: 'http://localhost:3000/signinwithgoogle',
+      method: 'POST',
+      data: { token: id_token }
+    })
+      .done(data => {
+        localStorage.setItem('token', data.token)
+        console.log('login success')
+      })
+      .fail(err => {
+        console.log(err)
+      })
+  }
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+      localStorage.removeItem('token')
+    });
+  }
+  </script>
+</body>
+</html>
