@@ -8,6 +8,7 @@ const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(CLIENT_ID);
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const request = require('request')
 
 mongoose.connect('mongodb://localhost:27017/kerennews', { useNewUrlParser: true })
 
@@ -92,6 +93,49 @@ class Controller {
         console.log(err)
         res.status(500).json(err)
       })
+    }
+    
+  static getCountries (req,res) {
+    const options = {
+      url: `http://countryapi.gear.host/v1/Country/getCountries?pName=${req.body.country}`,
+      headers: {
+          'User-Agent': 'request'
+      }
+    }
+    request(options,(error,response,body) => {
+        if(!error && response.statusCode == 200) {
+            var info = JSON.parse(body)
+            var innerInfo = info.Response
+
+            res.status(200).json({
+                "Name":innerInfo[0].Name,
+                "Alpha2Code":innerInfo[0].Alpha2Code,
+                "Alpha3Code":innerInfo[0].Alpha3Code,
+                "Latitude":innerInfo[0].Latitude,
+                "Longitude":innerInfo[0].Longitude
+            
+            })
+        } else{
+            res.status(500).json( {error: error} )
+        }
+    })
+  request(options,(error,response,body) => {
+      if(!error && response.statusCode == 200) {
+          var info = JSON.parse(body)
+          var innerInfo = info.Response
+
+          res.status(200).json({
+              "Name":innerInfo[0].Name,
+              "Alpha2Code":innerInfo[0].Alpha2Code,
+              "Alpha3Code":innerInfo[0].Alpha3Code,
+              "Latitude":innerInfo[0].Latitude,
+              "Longitude":innerInfo[0].Longitude
+          
+          })
+      } else{
+          res.status(500).json( {error: error} )
+      }
+  })
   }
 }
 
