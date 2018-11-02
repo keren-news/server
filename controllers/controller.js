@@ -103,39 +103,21 @@ class Controller {
       }
     }
     request(options,(error,response,body) => {
-        if(!error && response.statusCode == 200) {
+        if(!error) {
             var info = JSON.parse(body)
             var innerInfo = info.Response
-
+ 
             res.status(200).json({
                 "Name":innerInfo[0].Name,
                 "Alpha2Code":innerInfo[0].Alpha2Code,
                 "Alpha3Code":innerInfo[0].Alpha3Code,
                 "Latitude":innerInfo[0].Latitude,
                 "Longitude":innerInfo[0].Longitude
-            
             })
         } else{
             res.status(500).json( {error: error} )
         }
     })
-  request(options,(error,response,body) => {
-      if(!error && response.statusCode == 200) {
-          var info = JSON.parse(body)
-          var innerInfo = info.Response
-
-          res.status(200).json({
-              "Name":innerInfo[0].Name,
-              "Alpha2Code":innerInfo[0].Alpha2Code,
-              "Alpha3Code":innerInfo[0].Alpha3Code,
-              "Latitude":innerInfo[0].Latitude,
-              "Longitude":innerInfo[0].Longitude
-          
-          })
-      } else{
-          res.status(500).json( {error: error} )
-      }
-  })
   }
 }
 
