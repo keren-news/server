@@ -5,7 +5,7 @@ class NewsController {
     static getAll(req, res) {
       const keyCountry = req.body.keyCountry
       const options = {
-        url: `http://content.guardianapis.com/search?order-by=newest&show-fields=bodyText%2Cthumbnail&page-size=5&api-key=${process.env.API_KEY_GUARDIAN}`,
+        url: `http://content.guardianapis.com/search?order-by=newest&show-fields=bodyText%2Cthumbnail&page-size=13&api-key=${process.env.API_KEY_GUARDIAN}`,
         headers: {
           "User-Agent": "request"
         }
