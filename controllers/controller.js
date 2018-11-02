@@ -7,6 +7,7 @@ const isEmailExists = require('../helpers/isEmailExists')
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(CLIENT_ID);
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 mongoose.connect('mongodb://localhost:27017/kerennews', { useNewUrlParser: true })
 
@@ -18,7 +19,7 @@ class Controller {
   static register (req, res) {
     let hashed = hashPassword(req.body.password)
     let user = new User({
-      name: req.body.username,
+      name: req.body.name,
       password: hashed,
       email: req.body.email,
     })
@@ -60,6 +61,37 @@ class Controller {
       let jwtToken = jwt.sign(user, process.env.OUR_SECRET)
       res.status(200).json({ token: jwtToken })
     })
+  }
+
+  static login (req, res) {
+    User.findOne({ email: req.body.email })
+      .then(data => {
+        let hash = data.password
+        if (typeof data.password == undefined) {
+          res.status(400).json({ message: 'email / password is wrong!' })
+        } else {
+          bcrypt.compare(req.body.password, hash)
+            .then(isCorrect => {
+              if (isCorrect) {
+                let jwtToken = jwt.sign({ name: data.name, email: data.email }, process.env.OUR_SECRET)
+                res.status(200).json({ token: jwtToken })
+              } else {
+                return isCorrect
+              }
+            })
+            .then(() => {
+              res.status(400).json({ message: 'email / password is wrong!' })
+            })
+            .catch(err => {
+              console.log(err)
+              res.status(500).json(err)
+            })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        res.status(500).json(err)
+      })
   }
 }
 
