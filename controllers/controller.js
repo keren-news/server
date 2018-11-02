@@ -68,15 +68,11 @@ class Controller {
       .then(data => {
         let hash = data.password
         if (typeof data.password == undefined) {
-          console.log(data)
-          console.log('masuksini')
           res.status(400).json({ message: 'email / password is wrong!' })
         } else {
-          console.log(hash)
           bcrypt.compare(req.body.password, hash)
             .then(isCorrect => {
               if (isCorrect) {
-                // console.log(data)
                 let jwtToken = jwt.sign({ name: data.name, email: data.email }, process.env.OUR_SECRET)
                 res.status(200).json({ token: jwtToken })
               } else {
